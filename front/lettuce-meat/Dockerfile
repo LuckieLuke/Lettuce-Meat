@@ -5,6 +5,5 @@ COPY ./front/lettuce-meat/package.json ./
 COPY ./front/lettuce-meat/package-lock.json ./
 
 COPY . .
-RUN npm install @material-ui/core
 
 CMD ["npm", "start"]
