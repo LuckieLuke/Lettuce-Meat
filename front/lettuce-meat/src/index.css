@@ -11,3 +11,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.App {
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer {
+  position: absolute;
+  top: 0px;
+  display: flex;
+  width: 100%;
+}
+
+.MuiBottomNavigation-root {
+  width: 100%;
+}
+
+.content {
+  padding-top: 56px;
+}

@@ -1,6 +1,10 @@
 import './App.css';
 import { useState } from 'react';
-import { CircularProgress } from '@material-ui/core';
+import {
+  CircularProgress
+} from '@material-ui/core';
+
+import MiniDrawer from './MiniDrawer'
 
 function App() {
   const [info, setInfo] = useState('Coś ciekawego')
@@ -22,8 +26,15 @@ function App() {
 
   return (
     <div className="App">
-      <h1>{waiting ? <CircularProgress color='secondary' /> : info}</h1>
-      <button onClick={getData}>Get sth from fetch</button>
+      <MiniDrawer
+        content={
+          <div className="content">
+            <h1>{waiting ? <CircularProgress color='secondary' /> : info}</h1>
+            <button onClick={getData}>Get sth from fetch</button>
+          </div>
+        }
+      />
+
     </div>
   );
 }
