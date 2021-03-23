@@ -87,6 +87,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const handleLogIn = () => {
+    window.localStorage.setItem('login', 'marcin12');
+    window.location = '/login'
+}
+
+const handleLogOut = () => {
+    window.localStorage.removeItem('login');
+    window.location = '/';
+    window.location.reload();
+}
+
 export default function MiniDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
@@ -146,7 +157,7 @@ export default function MiniDrawer(props) {
                 </div>
                 <Divider />
                 <List>
-                    <ListItem button key={'Home'}>
+                    <ListItem button key={'Home'} onClick={() => window.location = '/'}>
                         <ListItemIcon><HomeIcon /></ListItemIcon>
                         <ListItemText primary='Home Page' />
                     </ListItem>
@@ -188,7 +199,7 @@ export default function MiniDrawer(props) {
                 <List>
                     {!window.localStorage.getItem('login') ?
                         <>
-                            <ListItem button key={'SignIn'}>
+                            <ListItem button key={'SignIn'} onClick={handleLogIn}>
                                 <ListItemIcon><ExitToAppIcon /></ListItemIcon>
                                 <ListItemText primary='Sign In' />
                             </ListItem>
@@ -198,7 +209,7 @@ export default function MiniDrawer(props) {
                             </ListItem>
                         </>
                         :
-                        <ListItem button key={'SignOut'}>
+                        <ListItem button key={'SignOut'} onClick={handleLogOut}>
                             <ListItemIcon><ExitToAppIcon /></ListItemIcon>
                             <ListItemText primary='Sign Out' />
                         </ListItem>

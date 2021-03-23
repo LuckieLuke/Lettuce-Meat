@@ -23,9 +23,8 @@ def after_request(response):
 
 @app.route('/')
 def main():
-    users = User.query.all()
     time.sleep(1)
-    return {'msg': str(users)}
+    return {'msg': 'KASZANKAAAAAAA'}
 
 
 @app.route('/register', methods=['POST'])

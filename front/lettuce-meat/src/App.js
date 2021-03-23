@@ -1,40 +1,20 @@
 import './App.css';
-import { useState } from 'react';
-import {
-  CircularProgress
-} from '@material-ui/core';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import MiniDrawer from './MiniDrawer'
+import HomePage from './HomePage'
+import LoginPage from './LoginPage'
 
 function App() {
-  const [info, setInfo] = useState('Coś ciekawego')
-  const [waiting, setWaiting] = useState(false)
 
-
-  let getData = () => {
-    setWaiting(true)
-    fetch('http://localhost:5000')
-      .then(resp => resp.json())
-      .then(response => {
-        setWaiting(false)
-        setInfo(response.msg)
-      })
-      .catch(error => {
-        setInfo('PROBLEM')
-      })
-  }
 
   return (
     <div className="App">
-      <MiniDrawer
-        content={
-          <div className="content">
-            <h1>{waiting ? <CircularProgress color='secondary' /> : info}</h1>
-            <button onClick={getData}>Get sth from fetch</button>
-          </div>
-        }
-      />
-
+      <Router>
+        <div>
+          <Route exact path="/" component={HomePage} />
+          <Route path="/login" component={LoginPage} />
+        </div>
+      </Router>
     </div>
   );
 }
