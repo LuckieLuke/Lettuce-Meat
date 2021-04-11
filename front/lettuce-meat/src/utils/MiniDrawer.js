@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+import '../index.css'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -44,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
         }),
+    },
+    logoName: {
+        fontFamily: 'Balsamiq Sans',
+        fontSize: 27,
     },
     menuButton: {
         marginRight: 36,
@@ -95,7 +100,6 @@ const handleLogIn = () => {
 const handleLogOut = () => {
     window.localStorage.removeItem('login');
     window.location = '/';
-    window.location.reload();
 }
 
 export default function MiniDrawer(props) {
@@ -132,7 +136,7 @@ export default function MiniDrawer(props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap>
+                    <Typography className={clsx(classes.logoName)} variant="h6" noWrap>
                         Lettuce 🥬 Meat 🥩
           </Typography>
                 </Toolbar>
@@ -203,7 +207,7 @@ export default function MiniDrawer(props) {
                                 <ListItemIcon><ExitToAppIcon /></ListItemIcon>
                                 <ListItemText primary='Sign In' />
                             </ListItem>
-                            <ListItem button key={'SignUp'}>
+                            <ListItem button key={'SignUp'} onClick={() => window.location = '/signup'}>
                                 <ListItemIcon><AssignmentTurnedInIcon /></ListItemIcon>
                                 <ListItemText primary='Sign Up' />
                             </ListItem>

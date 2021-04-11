@@ -2,6 +2,7 @@ from model import User, db
 from flask import Flask, make_response, request
 import json
 import time
+import hashlib
 
 app = Flask(__name__)
 
@@ -30,10 +31,10 @@ def main():
 @app.route('/register', methods=['POST'])
 def register():
     form = request.form
-
     username = form.get('username')
     email = form.get('email')
-    password = form.get('password')
+    password = form.get('password').encode('utf-8')
+    hash_pass = hashlib.sha512(password).hexdigest()
     is_vegan = True if form.get('is_vegan') == 'true' else False
     is_vegetarian = True if form.get('is_vegetarian') == 'true' else False
 
@@ -42,7 +43,7 @@ def register():
         user = User(
             username=username,
             email=email,
-            password=password,
+            password=hash_pass,
             is_vegan=is_vegan,
             is_vegetarian=is_vegetarian
         )
