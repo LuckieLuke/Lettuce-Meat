@@ -8,7 +8,6 @@ export default function HomePage(props) {
     const [info, setInfo] = useState('Coś ciekawego')
     const [waiting, setWaiting] = useState(false)
 
-
     let getData = () => {
         setWaiting(true)
         fetch('http://localhost:5000')

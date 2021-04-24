@@ -11,6 +11,7 @@ import Grid from '@material-ui/core/Grid'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
+import sha512 from 'js-sha512'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -56,12 +57,19 @@ export default function LoginPage(props) {
             body: new FormData(form.current)
         }).then(resp => {
             if (resp.ok) {
-                window.localStorage.setItem('login', resp.login)
-                window.location = '/'
+                return resp.json()
             } else {
                 window.location = '/login'
                 window.location.reload()
             }
+        }).then(info => {
+            window.localStorage.setItem('login', info.login)
+
+            let now = (new Date().toISOString().slice(0, 10)).toString()
+            let authCode = sha512(now)
+            window.localStorage.setItem('au_co', authCode)
+
+            window.location = '/'
         })
     }
     return (
