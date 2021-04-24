@@ -93,7 +93,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const handleLogIn = () => {
-    window.localStorage.setItem('login', 'marcin12');
     window.location = '/login'
 }
 
