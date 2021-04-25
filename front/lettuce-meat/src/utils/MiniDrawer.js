@@ -24,6 +24,8 @@ import AddIcon from '@material-ui/icons/Add';
 import CreateIcon from '@material-ui/icons/Create';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import sha512 from 'js-sha512'
+
 
 const drawerWidth = 240;
 
@@ -164,8 +166,19 @@ export default function MiniDrawer(props) {
                         <ListItemIcon><HomeIcon /></ListItemIcon>
                         <ListItemText primary='Home Page' />
                     </ListItem>
-                    {window.localStorage.getItem('login') ?
-                        <>
+                    <ListItem button key={'Recipies'}>
+                        <ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
+                        <ListItemText primary='Recipies' />
+                    </ListItem>
+                    <ListItem button key={'AddRecipe'}>
+                        <ListItemIcon><AddIcon /></ListItemIcon>
+                        <ListItemText primary='Add Recipe' />
+                    </ListItem>
+                </List>
+                <Divider />
+                {window.localStorage.getItem('login') && sha512((new Date().toISOString().slice(0, 10)).toString()) === window.localStorage.getItem('au_co') ?
+                    <>
+                        <List>
                             <ListItem button key={'Favorite'}>
                                 <ListItemIcon><FavoriteIcon /></ListItemIcon>
                                 <ListItemText primary='Favorites' />
@@ -174,19 +187,6 @@ export default function MiniDrawer(props) {
                                 <ListItemIcon><RestaurantMenuIcon /></ListItemIcon>
                                 <ListItemText primary='My Menus' />
                             </ListItem>
-                        </>
-                        : null}
-
-                    <ListItem button key={'Recipies'}>
-                        <ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
-                        <ListItemText primary='Recipies' />
-                    </ListItem>
-                </List>
-
-                {window.localStorage.getItem('login') ?
-                    <>
-                        <Divider />
-                        <List>
                             <ListItem button key={'AddMenu'}>
                                 <ListItemIcon><AddIcon /></ListItemIcon>
                                 <ListItemText primary='Add Menu' />
@@ -196,9 +196,9 @@ export default function MiniDrawer(props) {
                                 <ListItemText primary='Create Menu' />
                             </ListItem>
                         </List>
+                        <Divider />
                     </>
                     : null}
-                <Divider />
                 <List>
                     {!window.localStorage.getItem('login') ?
                         <>
