@@ -27,8 +27,11 @@ def after_request(response):
 @app.route('/')
 def main():
     time.sleep(1)
-    users = [str(user.username) + ' ' + str(user.email) + ' '
-             for user in User.query.all()]
+    users = [{
+        'id': str(user.id),
+        'username': str(user.username),
+        'email': str(user.email)
+    } for user in User.query.all()]
     return {'msg': users}
 
 

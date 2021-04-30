@@ -24,7 +24,7 @@ import AddIcon from '@material-ui/icons/Add';
 import CreateIcon from '@material-ui/icons/Create';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
-import sha512 from 'js-sha512'
+import { isLogin } from './services'
 
 
 const drawerWidth = 240;
@@ -99,7 +99,8 @@ const handleLogIn = () => {
 }
 
 const handleLogOut = () => {
-    window.localStorage.removeItem('login');
+    window.localStorage.removeItem('login')
+    window.localStorage.removeItem('au_co')
     window.location = '/';
 }
 
@@ -166,32 +167,32 @@ export default function MiniDrawer(props) {
                         <ListItemIcon><HomeIcon /></ListItemIcon>
                         <ListItemText primary='Home Page' />
                     </ListItem>
-                    <ListItem button key={'Recipies'}>
+                    <ListItem button key={'Recipies'} onClick={() => window.location = '/recipies'}>
                         <ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
                         <ListItemText primary='Recipies' />
                     </ListItem>
-                    <ListItem button key={'AddRecipe'}>
+                    <ListItem button key={'AddRecipe'} onClick={() => window.location = '/addrecipe'}>
                         <ListItemIcon><AddIcon /></ListItemIcon>
                         <ListItemText primary='Add Recipe' />
                     </ListItem>
                 </List>
                 <Divider />
-                {window.localStorage.getItem('login') && sha512((new Date().toISOString().slice(0, 10)).toString()) === window.localStorage.getItem('au_co') ?
+                {isLogin() ?
                     <>
                         <List>
-                            <ListItem button key={'Favorite'}>
+                            <ListItem button key={'Favorite'} onClick={() => window.location = '/favorites'}>
                                 <ListItemIcon><FavoriteIcon /></ListItemIcon>
                                 <ListItemText primary='Favorites' />
                             </ListItem>
-                            <ListItem button key={'Menus'}>
+                            <ListItem button key={'Menus'} onClick={() => window.location = '/menus'}>
                                 <ListItemIcon><RestaurantMenuIcon /></ListItemIcon>
                                 <ListItemText primary='My Menus' />
                             </ListItem>
-                            <ListItem button key={'AddMenu'}>
+                            <ListItem button key={'AddMenu'} onClick={() => window.location = '/addmenu'}>
                                 <ListItemIcon><AddIcon /></ListItemIcon>
                                 <ListItemText primary='Add Menu' />
                             </ListItem>
-                            <ListItem button key={'CreateMenu'}>
+                            <ListItem button key={'CreateMenu'} onClick={() => window.location = '/createmenu'}>
                                 <ListItemIcon><CreateIcon /></ListItemIcon>
                                 <ListItemText primary='Create Menu' />
                             </ListItem>
@@ -200,7 +201,7 @@ export default function MiniDrawer(props) {
                     </>
                     : null}
                 <List>
-                    {!window.localStorage.getItem('login') ?
+                    {!isLogin() ?
                         <>
                             <ListItem button key={'SignIn'} onClick={handleLogIn}>
                                 <ListItemIcon><ExitToAppIcon /></ListItemIcon>

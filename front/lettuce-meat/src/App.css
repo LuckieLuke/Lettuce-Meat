@@ -22,3 +22,9 @@ html {
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
+.recipies {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}

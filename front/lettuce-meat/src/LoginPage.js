@@ -1,6 +1,6 @@
 import MiniDrawer from './utils/MiniDrawer'
 import './App.css'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import sha512 from 'js-sha512'
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -48,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginPage(props) {
     const classes = useStyles()
     const form = useRef(null)
+    const [isSuccess, setIsSuccess] = useState(false)
 
     let sendSignIn = (event) => {
         event.preventDefault()
@@ -69,7 +71,12 @@ export default function LoginPage(props) {
             let authCode = sha512(now)
             window.localStorage.setItem('au_co', authCode)
 
-            window.location = '/'
+
+            setTimeout(() => {
+                setIsSuccess(true)
+            }, 250);
+            setTimeout(() => window.location = '/', 750)
+
         })
     }
     return (
@@ -126,9 +133,14 @@ export default function LoginPage(props) {
                                         </Link>
                                     </Grid>
                                 </Grid>
+                                <br />
+                                {isSuccess ?
+                                    <Alert severity="success">Successfully logged in!</Alert>
+                                    : null}
                             </form>
                         </div>
                     </Grid>
+
                 </Grid>
             }
         />

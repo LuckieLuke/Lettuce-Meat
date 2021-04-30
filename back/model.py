@@ -20,3 +20,8 @@ class User(db.Model):
 
     def __repr__(self):
         return f'username: {self.username}  email: {self.email}'
+
+
+class Recipe(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), unique=True, nullable=False)
