@@ -37,7 +37,7 @@ export default function RecipeCard(props) {
                 <CardMedia
                     className={classes.media}
                     image={props.user.img || "https://www.dashef.com/wp-content/uploads/2016/11/Depositphotos_71652087_original-min.jpg"}
-                    title="Contemplative Reptile"
+                    title={props.user.username}
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
