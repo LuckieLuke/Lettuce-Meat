@@ -36,7 +36,7 @@ export default function RecipeCard(props) {
             >
                 <CardMedia
                     className={classes.media}
-                    image={props.user.img || "https://www.dashef.com/wp-content/uploads/2016/11/Depositphotos_71652087_original-min.jpg"}
+                    image={props.user.img || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcSdgQeHNtIa3FoyfnxdS9O8P27OX_qC9JGnikmY00WYCDg3JxsWQ04y78E7FOjQWrC0c&usqp=CAU"}
                     title={props.user.username}
                 />
                 <CardContent>

@@ -167,9 +167,9 @@ export default function MiniDrawer(props) {
                         <ListItemIcon><HomeIcon /></ListItemIcon>
                         <ListItemText primary='Home Page' />
                     </ListItem>
-                    <ListItem button key={'Recipies'} onClick={() => window.location = '/recipies'}>
+                    <ListItem button key={'Recipes'} onClick={() => window.location = '/recipes'}>
                         <ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
-                        <ListItemText primary='Recipies' />
+                        <ListItemText primary='Recipes' />
                     </ListItem>
                     <ListItem button key={'AddRecipe'} onClick={() => window.location = '/addrecipe'}>
                         <ListItemIcon><AddIcon /></ListItemIcon>

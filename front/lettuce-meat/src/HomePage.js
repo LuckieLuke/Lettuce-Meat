@@ -39,7 +39,7 @@ export default function HomePage(props) {
             content={
                 < div className="content" >
                     <h1>Our most fresh findings:</h1>
-                    <div className="recipies">
+                    <div className="recipes">
                         {waiting ? <CircularProgress color='secondary' /> : mapUsers()}
                     </div>
                     <br />

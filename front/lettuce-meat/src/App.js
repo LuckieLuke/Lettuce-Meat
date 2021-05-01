@@ -36,7 +36,7 @@ class App extends React.Component {
             <Route exact path="/" component={HomePage} />
             <Route path="/login" component={!this.state.loggedIn ? LoginPage : HomePage} />
             <Route path="/signup" component={!this.state.loggedIn ? SignUpPage : HomePage} />
-            <Route path="/recipies" component={HomePage} />
+            <Route path="/recipes" component={HomePage} />
             <Route path="/addrecipe" component={HomePage} />
             <PrivateRoute path="/favorites" component={HomePage} />
             <PrivateRoute path="/menus" component={HomePage} />

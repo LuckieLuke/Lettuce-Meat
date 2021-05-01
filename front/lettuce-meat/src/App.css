@@ -23,7 +23,7 @@ html {
   color: white;
 }
 
-.recipies {
+.recipes {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
