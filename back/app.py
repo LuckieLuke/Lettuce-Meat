@@ -84,7 +84,7 @@ def login():
     return make_response(json.dumps({'msg': 'Wrong data'}), 400)
 
 
-@app.route('/ingredient', methods=['POST'])
+@app.route('/ingredient', methods=['POST', 'GET'])
 def add_ingredient():
     if request.method == 'POST':
         info = request.headers.get('Authorization').split()[1].encode()
@@ -110,6 +110,18 @@ def add_ingredient():
         db.session.commit()
 
         return make_response(json.dumps({'msg': f'Created {created} of total {init_size} ingredients'}), 201)
+    elif request.method == 'GET':
+        ingredients = [{
+            'id': ingredient.id,
+            'name': str(ingredient.name),
+            'kcal': ingredient.kcal,
+            'default_unit': str(ingredient.default_unit),
+            'for_vegan': ingredient.for_vegan,
+            'for_vegetarian': ingredient.for_vegetarian
+        } for ingredient in Ingredient.query.all()]
+
+        return {'msg': ingredients}
+
     return make_response(json.dumps({'msg': 'Something wrong'}), 400)
 
 

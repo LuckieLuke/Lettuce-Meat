@@ -7,6 +7,7 @@ import HomePage from './HomePage'
 import LoginPage from './LoginPage'
 import SignUpPage from './SignUpPage'
 import PrivateRoute from './PrivateRoute'
+import AddRecipePage from './AddRecipePage'
 
 class App extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class App extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let auth = window.localStorage.getItem('au_co')
     let uname = window.localStorage.getItem('login')
     let now = sha512((new Date().toISOString().slice(0, 10)).toString())
@@ -37,7 +38,7 @@ class App extends React.Component {
             <Route path="/login" component={!this.state.loggedIn ? LoginPage : HomePage} />
             <Route path="/signup" component={!this.state.loggedIn ? SignUpPage : HomePage} />
             <Route path="/recipes" component={HomePage} />
-            <Route path="/addrecipe" component={HomePage} />
+            <Route path="/addrecipe" component={AddRecipePage} />
             <PrivateRoute path="/favorites" component={HomePage} />
             <PrivateRoute path="/menus" component={HomePage} />
             <PrivateRoute path="/addmenu" component={HomePage} />
