@@ -1,8 +1,9 @@
-from model import User, db
+from model import User, db, Ingredient
 from flask import Flask, make_response, request
 import json
 import time
 import hashlib
+import base64
 
 app = Flask(__name__)
 
@@ -29,9 +30,9 @@ def main():
     time.sleep(1)
     users = [{
         'id': str(user.id),
-        'username': str(user.username),
-        'email': str(user.email)
-    } for user in User.query.all()]
+        'username': str(user.name),
+        'email': str(user.kcal) + ' kcal per 100' + str(user.default_unit)
+    } for user in Ingredient.query.all()]
     return {'msg': users}
 
 
@@ -81,6 +82,35 @@ def login():
             return make_response(json.dumps({'login': user.username}), 200)
         return make_response(json.dumps({'msg': 'Wrong password'}), 404)
     return make_response(json.dumps({'msg': 'Wrong data'}), 400)
+
+
+@app.route('/ingredient', methods=['POST'])
+def add_ingredient():
+    if request.method == 'POST':
+        info = request.headers.get('Authorization').split()[1].encode()
+        message = base64.b64decode(info).decode().split(':')
+        login, password = message[0], message[1]
+        if not (login == 'adm1n' and password == 'SecurePass'):
+            return make_response(json.dumps({'msg': 'Unauthorized'}, 403))
+
+        body = request.json
+
+        init_size = len(body.get('ingredients'))
+        created = 0
+        for ing in body.get('ingredients'):
+            ingredient = Ingredient(
+                name=ing['name'],
+                kcal=ing['kcal'],
+                default_unit=ing['default_unit'],
+                for_vegan=ing['for_vegan'] == 1,
+                for_vegetarian=ing['for_vegetarian'] == 1
+            )
+            db.session.add(ingredient)
+            created += 1
+        db.session.commit()
+
+        return make_response(json.dumps({'msg': f'Created {created} of total {init_size} ingredients'}), 201)
+    return make_response(json.dumps({'msg': 'Something wrong'}), 400)
 
 
 if __name__ == '__main__':

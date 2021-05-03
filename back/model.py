@@ -31,9 +31,10 @@ class Ingredient(db.Model):
     for_vegan = db.Column(db.Boolean, nullable=False)
     for_vegetarian = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, name, kcal, for_vegan, for_vegetarian):
+    def __init__(self, name, kcal, default_unit, for_vegan, for_vegetarian):
         self.name = name
         self.kcal = kcal
+        self.default_unit = default_unit
         self.for_vegan = for_vegan
         self.for_vegetarian = for_vegetarian
 
