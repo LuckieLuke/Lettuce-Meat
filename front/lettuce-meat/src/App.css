@@ -28,3 +28,13 @@ html {
   flex-wrap: wrap;
   justify-content: space-around;
 }
+
+.buildRecipe {
+  display: flex;
+  justify-content: center;
+}
+
+.ingredientInput {
+  width: 140px;
+  margin: 10px;
+}

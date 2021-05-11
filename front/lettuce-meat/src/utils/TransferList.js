@@ -31,7 +31,7 @@ function intersection(a, b) {
     return a.filter((item) => b.indexOf(item) !== -1);
 }
 
-export default function TransferList() {
+export default function TransferList(props) {
     const classes = useStyles();
     const [checked, setChecked] = useState([]);
     const [left, setLeft] = useState([]);
@@ -77,22 +77,32 @@ export default function TransferList() {
         setLeft([]);
     };
 
+    const handleAllLeft = () => {
+        setLeft(left.concat(right));
+        setRight([]);
+    };
+
     const handleCheckedRight = () => {
         setRight(right.concat(leftChecked));
         setLeft(not(left, leftChecked));
         setChecked(not(checked, leftChecked));
+
+        clearLocal();
     };
 
     const handleCheckedLeft = () => {
         setLeft(left.concat(rightChecked));
         setRight(not(right, rightChecked));
         setChecked(not(checked, rightChecked));
+
+        clearLocal();
     };
 
-    const handleAllLeft = () => {
-        setLeft(left.concat(right));
-        setRight([]);
-    };
+    const clearLocal = () => {
+        for (let item of left) {
+            window.localStorage.removeItem(item)
+        }
+    }
 
     const customList = (items) => (
         <Paper className={classes.paper}>
@@ -169,8 +179,10 @@ export default function TransferList() {
                 </Grid>
                 <Grid item>{customList(right)}</Grid>
             </Grid>
-            <Button variant="contained" color="primary" onClick={() => console.log(right)}>
-                Confirm
+            <Button variant="contained" color="primary" onClick={() => {
+                props.handleClick(right)
+            }}>
+                Add details
       </Button>
         </>
     );
