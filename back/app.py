@@ -1,9 +1,10 @@
-from model import User, db, Ingredient
+from model import User, db, Ingredient, Recipe, Recipe_ingredient
 from flask import Flask, make_response, request
 import json
 import time
 import hashlib
 import base64
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -84,7 +85,7 @@ def login():
     return make_response(json.dumps({'msg': 'Wrong data'}), 400)
 
 
-@app.route('/ingredient', methods=['POST', 'GET'])
+@app.route('/ingredient', methods=['POST', 'GET'])  # TODO dodać jajka
 def add_ingredient():
     if request.method == 'POST':
         info = request.headers.get('Authorization').split()[1].encode()
@@ -123,6 +124,73 @@ def add_ingredient():
         return {'msg': ingredients}
 
     return make_response(json.dumps({'msg': 'Something wrong'}), 400)
+
+
+@app.route('/recipe', methods=['GET', 'POST'])
+def recipe():
+    if request.method == 'POST':
+        info = request.headers.get('Authorization').split()[1].encode()
+        message = base64.b64decode(info).decode().split(':')
+        login, password = message[0], message[1]
+        if not (login == 'adm1n' and password == 'SecurePass'):
+            return make_response(json.dumps({'msg': 'Unauthorized'}, 403))
+
+        body = request.json
+
+        check_recipe = Recipe.query.filter_by(name=body['name']).first()
+        if check_recipe:
+            return make_response(json.dumps({'msg': 'recipe already created'}), 400)
+
+        ingredients = body['ingredients']
+        full_kcal = 0
+        for ingredient in ingredients:
+            ing_from_db = Ingredient.query.filter_by(
+                name=ingredient['name']).first()
+            part_kcal = float(ing_from_db.kcal) * \
+                (int(ingredient['amount']) / 100)
+            full_kcal += part_kcal
+
+        recipe = Recipe(
+            name=body['name'],
+            kcal=full_kcal,
+            content=body['content'],
+            type=body['type'],
+            image=body['image'],
+            date_added=datetime.now()
+        )
+        db.session.add(recipe)
+        db.session.commit()
+
+        recipe = Recipe.query.filter_by(name=body['name']).first()
+
+        for ingredient in ingredients:
+            ing_from_db = Ingredient.query.filter_by(
+                name=ingredient['name']).first()
+            rec_ing = Recipe_ingredient(
+                ingr_id=ing_from_db.id,
+                recipe_id=recipe.id,
+                amount=ingredient['amount'],
+                unit=ing_from_db.default_unit,
+                kcal=part_kcal,
+                for_vegan=ing_from_db.for_vegan,
+                for_vegetarian=ing_from_db.for_vegetarian
+            )
+            db.session.add(rec_ing)
+        db.session.commit()
+        return make_response(json.dumps({'msg': 'recipe created'}), 200)
+
+    elif request.method == 'GET':
+        recipes = [{
+            'id': recipe.id,
+            'name': str(recipe.name),
+            'kcal': recipe.kcal,
+            'content': recipe.content,
+            'type': recipe.type,
+            'image': recipe.image,
+            'date_added': str(recipe.date_added)
+        } for recipe in Recipe.query.all()]
+
+        return {'msg': recipes}
 
 
 if __name__ == '__main__':

@@ -41,10 +41,8 @@ class Ingredient(db.Model):
 
 class Recipe_ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    ingr_id = db.Column(db.Integer, db.ForeignKey(
-        'ingredient.id'), nullable=False)
-    recipe_id = db.Column(db.Integer, db.ForeignKey(
-        'recipe.id'), nullable=False)
+    ingr_id = db.Column(db.Integer, nullable=False)
+    recipe_id = db.Column(db.Integer, nullable=False)
     amount = db.Column(db.Integer, nullable=False)
     unit = db.Column(db.String(10), nullable=False)
     kcal = db.Column(db.Float, nullable=False)
@@ -95,8 +93,7 @@ class Favorite_recipe(db.Model):
 class Menu_recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     menu_id = db.Column(db.Integer, nullable=False, unique=False)
-    recipe_id = db.Column(db.Integer, db.ForeignKey(
-        'recipe.id'), nullable=False)
+    recipe_id = db.Column(db.Integer, nullable=False)
 
     def __init__(self, menu_id, recipe_id):
         self.menu_id = menu_id
