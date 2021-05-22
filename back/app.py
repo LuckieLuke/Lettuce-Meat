@@ -1,4 +1,5 @@
-from model import User, db, Ingredient, Recipe, Recipe_ingredient
+from back.model import User, db, Ingredient, Recipe, Recipe_ingredient, Favorite_recipe
+#from model import User, db, Ingredient, Recipe, Recipe_ingredient, Favorite_recipe
 from flask import Flask, make_response, request
 import json
 import time
@@ -29,12 +30,14 @@ def after_request(response):
 @app.route('/')
 def main():
     time.sleep(1)
-    users = [{
-        'id': str(user.id),
-        'username': str(user.name),
-        'email': str(user.kcal) + ' kcal per 100' + str(user.default_unit)
-    } for user in Ingredient.query.all()]
-    return {'msg': users}
+    recipes = [{
+        'id': str(recipe.id),
+        'name': str(recipe.name),
+        'kcal': str(recipe.kcal),
+        'img': str(recipe.image),
+        'added': str(recipe.date_added)
+    } for recipe in Recipe.query.all()]
+    return {'msg': recipes}
 
 
 @app.route('/register', methods=['POST'])
@@ -191,6 +194,62 @@ def recipe():
         } for recipe in Recipe.query.all()]
 
         return {'msg': recipes}
+
+
+@app.route('/favorite', methods=['GET', 'POST', 'DELETE'])
+def favorite():
+    if request.method == 'GET':
+        body = request.json
+        username = body['username']
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return make_response(json.dumps({'msg': 'user not found'}), 404)
+
+        id = user.id
+        recipes = [{
+            'id': recipe.recipe_id,
+        } for recipe in Favorite_recipe.query.filter_by(user_id=id)]
+
+        for recipe in recipes:
+            id = recipe['id']
+            name = Recipe.query.filter_by(id=id).first().name
+            recipe['name'] = name
+
+        return {'recipes': recipes}
+    elif request.method == 'POST':
+        info = request.headers.get('Authorization').split()[1].encode()
+        message = base64.b64decode(info).decode().split(':')
+        login, password = message[0], message[1]
+        if not (login == 'adm1n' and password == 'SecurePass'):
+            return make_response(json.dumps({'msg': 'Unauthorized'}, 403))
+
+        body = request.json
+        username = body['username']
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return make_response(json.dumps({'msg': 'user not found'}), 404)
+
+        id = user.id
+        recipe_id = body['recipe_id']
+
+        if not recipe_id:
+            return make_response(json.dumps({'msg': 'no recipe id given'}), 400)
+
+        check_fav = Favorite_recipe.query.filter_by(
+            user_id=id, recipe_id=recipe_id).first()
+        if check_fav:
+            db.session.delete(check_fav)
+            db.session.commit()
+            return make_response(json.dumps({'msg': 'recipe deleted'}), 200)
+
+        recipe = Recipe.query.filter_by(id=recipe_id).first()
+        if not recipe:
+            return make_response(json.dumps({'msg': 'no recipe with such id'}), 404)
+
+        fav = Favorite_recipe(recipe_id=recipe_id, user_id=id)
+        db.session.add(fav)
+        db.session.commit()
+        return make_response(json.dumps({'msg': 'fav recipe created'}), 200)
 
 
 if __name__ == '__main__':

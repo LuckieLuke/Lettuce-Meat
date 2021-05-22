@@ -19,7 +19,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import RestaurantMenuIcon from '@material-ui/icons/RestaurantMenu';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import AddIcon from '@material-ui/icons/Add';
 import CreateIcon from '@material-ui/icons/Create';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -163,13 +162,9 @@ export default function MiniDrawer(props) {
                 </div>
                 <Divider />
                 <List>
-                    <ListItem button key={'Home'} onClick={() => window.location = '/'}>
+                    <ListItem button key={'Home'} onClick={() => window.location = '/recipes'}>
                         <ListItemIcon><HomeIcon /></ListItemIcon>
                         <ListItemText primary='Home Page' />
-                    </ListItem>
-                    <ListItem button key={'Recipes'} onClick={() => window.location = '/recipes'}>
-                        <ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
-                        <ListItemText primary='Recipes' />
                     </ListItem>
                     <ListItem button key={'AddRecipe'} onClick={() => window.location = '/addrecipe'}>
                         <ListItemIcon><AddIcon /></ListItemIcon>

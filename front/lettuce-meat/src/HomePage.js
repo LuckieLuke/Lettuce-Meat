@@ -36,35 +36,35 @@ export default function HomePage(props) {
         const [recs, counter] = adjustCardNum(info.length)
         setNumOfRecipes(recs)
         setAllPagesCounter(counter)
-        mapUsers()
+        mapRecipes()
     })
 
-    let mapUsers = () => {
+    let mapRecipes = () => {
         if (info[0] === 'Coś ciekawego')
             return info[0]
 
-        const users = info.slice(numOfRecipes * (currentPage - 1), numOfRecipes * currentPage).map((user) => {
-            return <RecipeCard user={user} key={user.id} />
+        const recipes = info.slice(numOfRecipes * (currentPage - 1), numOfRecipes * currentPage).map((recipe) => {
+            return <RecipeCard recipe={recipe} key={recipe.id} />
         })
 
-        return users
+        return recipes
     }
 
     return (
         < MiniDrawer
             content={
                 < div className="content" >
-                    <h1>Our most fresh findings:</h1>
+                    <h1>Our new findings:</h1>
                     <Pagination
                         count={allPagesCounter}
                         color="primary"
                         onChange={(event, value) => {
                             setCurrentPage(value)
-                            mapUsers()
+                            mapRecipes()
                         }}
                     />
                     <div className="recipes">
-                        {waiting ? <CircularProgress color='secondary' /> : mapUsers()}
+                        {waiting ? <CircularProgress color='secondary' /> : mapRecipes()}
                     </div>
                 </div >
             }

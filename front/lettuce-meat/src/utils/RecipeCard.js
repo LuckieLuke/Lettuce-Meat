@@ -32,32 +32,35 @@ export default function RecipeCard(props) {
     return (
         <Card className={classes.root}>
             <CardActionArea
-                onClick={() => { window.location = '/recipies?q=' + props.user.id }}
+                onClick={() => { window.location = '/recipies?q=' + props.recipe.id }}
             >
                 <CardMedia
                     className={classes.media}
-                    image={props.user.img || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcSdgQeHNtIa3FoyfnxdS9O8P27OX_qC9JGnikmY00WYCDg3JxsWQ04y78E7FOjQWrC0c&usqp=CAU"}
-                    title={props.user.username}
+                    image={props.recipe.img || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcSdgQeHNtIa3FoyfnxdS9O8P27OX_qC9JGnikmY00WYCDg3JxsWQ04y78E7FOjQWrC0c&usqp=CAU"}
+                    title={props.recipe.name}
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                        {props.user.username}
+                        {props.recipe.name}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        {props.user.email}
+                        Kcal: {props.recipe.kcal}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                        Added: {props.recipe.added.slice(0, 10)}
                     </Typography>
                 </CardContent>
             </CardActionArea>
             <CardActions className={classes.actions}>
                 <IconButton
                     aria-label="add to favorites"
-                    onClick={() => { window.location = '/recipies?q=' + props.user.id }}
+                    onClick={() => { window.location = '/recipies?q=' + props.recipe.id }}
                 >
                     <FavoriteIcon />
                 </IconButton>
                 <IconButton
                     aria-label="learn more"
-                    onClick={() => { window.location = '/recipies?q=' + props.user.id }}
+                    onClick={() => { window.location = '/recipies?q=' + props.recipe.id }}
                 >
                     <ExpandMoreIcon />
                 </IconButton>
