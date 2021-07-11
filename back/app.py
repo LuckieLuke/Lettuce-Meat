@@ -196,7 +196,7 @@ def recipe():
         return {'msg': recipes}
 
 
-@app.route('/favorite', methods=['GET', 'POST', 'DELETE'])
+@app.route('/favorite', methods=['GET', 'POST'])
 def favorite():
     if request.method == 'GET':
         body = request.json
