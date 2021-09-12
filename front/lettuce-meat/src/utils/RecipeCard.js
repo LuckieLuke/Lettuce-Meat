@@ -33,7 +33,7 @@ export default function RecipeCard(props) {
     <Card className={classes.root}>
       <CardActionArea
         onClick={() => {
-          window.location = "/recipies?q=" + props.recipe.id;
+          window.location = "/recipe/" + props.recipe.id;
         }}
       >
         <CardMedia
@@ -62,7 +62,7 @@ export default function RecipeCard(props) {
         <IconButton
           aria-label="add to favorites"
           onClick={() => {
-            window.location = "/recipes?q=" + props.recipe.id;
+            window.location = "/recipe/" + props.recipe.id;
           }}
         >
           <FavoriteIcon />
@@ -70,7 +70,7 @@ export default function RecipeCard(props) {
         <IconButton
           aria-label="learn more"
           onClick={() => {
-            window.location = "/recipes?q=" + props.recipe.id;
+            window.location = "/recipe/" + props.recipe.id;
           }}
         >
           <ExpandMoreIcon />

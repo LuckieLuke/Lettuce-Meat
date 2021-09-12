@@ -67,15 +67,19 @@ class Recipe(db.Model):
     type = db.Column(db.String(20), nullable=False)
     image = db.Column(db.String(300), nullable=True)
     date_added = db.Column(db.DateTime, nullable=False)
+    for_vegan = db.Column(db.Boolean, nullable=False)
+    for_vegetarian = db.Column(db.Boolean, nullable=False)
     # ingredients are under recipe's id in recipe_ingredient table
 
-    def __init__(self, name, kcal, content, type, image, date_added):
+    def __init__(self, name, kcal, content, type, image, date_added, for_vegan, for_vegetarian):
         self.name = name
         self.kcal = kcal
         self.content = content
         self.type = type
         self.image = image
         self.date_added = date_added
+        self.for_vegan = for_vegan
+        self.for_vegetarian = for_vegetarian
 
 
 class Favorite_recipe(db.Model):

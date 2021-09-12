@@ -58,7 +58,7 @@ export default function InputTable(props) {
                       shrink: true,
                     }}
                     variant="outlined"
-                    onChange={(event) => {
+                    onInput={(event) => {
                       getCurrentValues();
                     }}
                     value={numbers[row.name] ? numbers[row.name] : ""}

@@ -1,13 +1,16 @@
 from back.model import User, db, Ingredient, Recipe, Recipe_ingredient, Favorite_recipe
 #from model import User, db, Ingredient, Recipe, Recipe_ingredient, Favorite_recipe
-from flask import Flask, make_response, request
+from flask import Flask, make_response, request, jsonify
+from flask_cors import CORS
 import json
 import time
 import hashlib
 import base64
 from datetime import datetime
 
+
 app = Flask(__name__)
+CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -17,14 +20,6 @@ log = app.logger
 
 with app.app_context():
     db.create_all()
-
-
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', '*')
-    response.headers.add('Access-Control-Allow-Methods', '*')
-    return response
 
 
 @app.route('/')
@@ -88,7 +83,7 @@ def login():
     return make_response(json.dumps({'msg': 'Wrong data'}), 400)
 
 
-@app.route('/ingredient', methods=['POST', 'GET'])  # TODO dodać jajka
+@app.route('/ingredient', methods=['POST', 'GET'])
 def add_ingredient():
     if request.method == 'POST':
         info = request.headers.get('Authorization').split()[1].encode()
@@ -138,20 +133,22 @@ def recipe():
         if not (login == 'adm1n' and password == 'SecurePass'):
             return make_response(json.dumps({'msg': 'Unauthorized'}, 403))
 
-        body = request.json
+        body = request.get_json()
+        log.info(body.get('ingredients'))
 
-        check_recipe = Recipe.query.filter_by(name=body['name']).first()
-        if check_recipe:
-            return make_response(json.dumps({'msg': 'recipe already created'}), 400)
-
-        ingredients = body['ingredients']
         full_kcal = 0
-        for ingredient in ingredients:
+        for_vegan = 0
+        for_vegetarian = 0
+        for ingredient, amount in json.loads(body.get('ingredients')).items():
             ing_from_db = Ingredient.query.filter_by(
-                name=ingredient['name']).first()
+                name=ingredient).first()
             part_kcal = float(ing_from_db.kcal) * \
-                (int(ingredient['amount']) / 100)
+                (int(amount) / 100)
             full_kcal += part_kcal
+            if ing_from_db.for_vegan:
+                for_vegan += 1
+            if ing_from_db.for_vegetarian:
+                for_vegetarian += 1
 
         recipe = Recipe(
             name=body['name'],
@@ -159,20 +156,22 @@ def recipe():
             content=body['content'],
             type=body['type'],
             image=body['image'],
-            date_added=datetime.now()
+            date_added=datetime.now(),
+            for_vegan=for_vegan != 0,
+            for_vegetarian=for_vegetarian != 0
         )
         db.session.add(recipe)
         db.session.commit()
 
         recipe = Recipe.query.filter_by(name=body['name']).first()
 
-        for ingredient in ingredients:
+        for ingredient, amount in json.loads(body.get('ingredients')).items():
             ing_from_db = Ingredient.query.filter_by(
-                name=ingredient['name']).first()
+                name=ingredient).first()
             rec_ing = Recipe_ingredient(
                 ingr_id=ing_from_db.id,
                 recipe_id=recipe.id,
-                amount=ingredient['amount'],
+                amount=amount,
                 unit=ing_from_db.default_unit,
                 kcal=part_kcal,
                 for_vegan=ing_from_db.for_vegan,
@@ -250,6 +249,39 @@ def favorite():
         db.session.add(fav)
         db.session.commit()
         return make_response(json.dumps({'msg': 'fav recipe created'}), 200)
+
+
+@app.route('/recipe/<id>', methods=['GET'])
+def get_recipe(id):
+    recipe = Recipe.query.filter_by(id=id).first()
+
+    if not recipe:
+        return make_response(json.dumps({'msg': 'recipe not found'}), 404)
+
+    ingredients_db = Recipe_ingredient.query.filter_by(recipe_id=id).all()
+
+    ingredients = [
+        {
+            'id': ing.ingr_id,
+            'name': Ingredient.query.filter_by(id=ing.ingr_id).first().name,
+            'amount': ing.amount,
+            'unit': ing.unit,
+            'kcal': ing.kcal
+        } for ing in ingredients_db
+    ]
+
+    return make_response(json.dumps({'msg': {
+        'id': id,
+        'name': recipe.name,
+        'kcal': recipe.kcal,
+        'content': recipe.content,
+        'type': recipe.type,
+        'image': recipe.image,
+        'date_added': str(recipe.date_added),
+        'for_vegan': recipe.for_vegan,
+        'for_vegetarian': recipe.for_vegetarian,
+        'ingredients': ingredients
+    }}), 200)
 
 
 if __name__ == '__main__':
