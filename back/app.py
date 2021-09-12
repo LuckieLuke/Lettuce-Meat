@@ -7,6 +7,7 @@ import time
 import hashlib
 import base64
 from datetime import datetime
+from itertools import product
 
 
 app = Flask(__name__)
@@ -282,6 +283,49 @@ def get_recipe(id):
         'for_vegetarian': recipe.for_vegetarian,
         'ingredients': ingredients
     }}), 200)
+
+
+@app.route('/menus', methods=['GET'])
+def get_menus():
+    return json.dumps({'msg': 'here are all your menus'})
+
+
+@app.route('/menu', methods=['POST'])  # automatic creating menus
+def menu():
+    body = request.json
+
+    if not body.get('meals') or not body.get('kcal'):
+        return make_response({'msg': 'Some data missing'}, 400)
+
+    meals = body['meals']
+    target_kcal = body['kcal']
+
+    combinations = list(product(*[Recipe.query.filter_by(
+        type=type_of_meal).all() for type_of_meal in meals]))
+
+    log.info(combinations)
+    current_best = tuple()
+    current_best_kcal = -10000000
+
+    for combination in combinations:
+        kcal = 0
+        for recipe in combination:
+            kcal += recipe.kcal
+        if abs(current_best_kcal - target_kcal) > abs(kcal - target_kcal):
+            current_best = combination
+            current_best_kcal = kcal
+
+    return make_response({'msg': [x.kcal for x in current_best]}, 200)
+
+
+@app.route('/menu/<id>', methods=['GET'])  # get info about menu with id
+def get_menu(id):
+    return json.dumps({'msg': 'here are all your menus'})
+
+
+@app.route('/manualmenu', methods=['POST'])
+def manual_menu():
+    return json.dumps({'msg': 'here are all your menus'})
 
 
 if __name__ == '__main__':
