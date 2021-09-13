@@ -29,6 +29,7 @@ export default function AddRecipePage(props) {
   const [image, setImage] = useState("");
   const [type, setType] = useState("");
   const [name, setName] = useState("");
+  const [portions, setPortions] = useState(1);
 
   const handleChange = (event) => {
     setType(event.target.value);
@@ -56,6 +57,7 @@ export default function AddRecipePage(props) {
         image,
         type,
         name,
+        portions,
       }),
       headers: {
         Authorization: "Basic YWRtMW46U2VjdXJlUGFzcw==",
@@ -117,6 +119,22 @@ export default function AddRecipePage(props) {
                   <MenuItem value={"supper"}>Supper</MenuItem>
                 </Select>
               </FormControl>
+              <TextField
+                id="portions"
+                label="Portions"
+                style={{ margin: 8 }}
+                placeholder="1"
+                multiline
+                margin="normal"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="standard"
+                value={portions}
+                onChange={(e) => {
+                  setPortions(e.target.value);
+                }}
+              />
               <TextField
                 id="recipe-content"
                 label="Write recipe here"

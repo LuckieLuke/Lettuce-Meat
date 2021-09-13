@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function HomePage(props) {
+export default function FavoritePage(props) {
   const classes = useStyles();
   const [info, setInfo] = useState(["Coś ciekawego"]);
   const [waiting, setWaiting] = useState(false);
@@ -40,9 +40,11 @@ export default function HomePage(props) {
       .then((resp) => resp.json())
       .then((response) => {
         setWaiting(false);
-        setInfo(response.msg);
+        setInfo(response.msg.filter((item) => item.favorite));
 
-        const [recs, counter] = adjustCardNum(response.msg.length);
+        const [recs, counter] = adjustCardNum(
+          response.msg.filter((item) => item.favorite).length
+        );
         setNumOfRecipes(recs);
         setAllPagesCounter(counter);
       })
@@ -62,7 +64,6 @@ export default function HomePage(props) {
     if (info[0] === "Coś ciekawego") return info[0];
 
     const recipes = info
-      .sort((a, b) => b.id - a.id)
       .slice(numOfRecipes * (currentPage - 1), numOfRecipes * currentPage)
       .map((recipe) => {
         return <RecipeCard recipe={recipe} key={recipe.id} />;
@@ -82,9 +83,12 @@ export default function HomePage(props) {
         .then((resp) => resp.json())
         .then((response) => {
           setWaiting(false);
-          setInfo(response.msg);
+          console.log(response.msg.filter((item) => item.favorite));
+          setInfo(response.msg.filter((item) => item.favorite));
 
-          const [recs, counter] = adjustCardNum(response.msg.length);
+          const [recs, counter] = adjustCardNum(
+            response.msg.filter((item) => item.favorite).length
+          );
           setNumOfRecipes(recs);
           setAllPagesCounter(counter);
         })
@@ -98,9 +102,11 @@ export default function HomePage(props) {
         .then((resp) => resp.json())
         .then((response) => {
           setWaiting(false);
-          setInfo(response.msg);
+          setInfo(response.msg.filter((item) => item.favorite));
 
-          const [recs, counter] = adjustCardNum(response.msg.length);
+          const [recs, counter] = adjustCardNum(
+            response.msg.filter((item) => item.favorite).length
+          );
           setNumOfRecipes(recs);
           setAllPagesCounter(counter);
         })

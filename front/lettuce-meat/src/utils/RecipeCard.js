@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 
 const useStyles = makeStyles({
   root: {
@@ -51,7 +52,7 @@ export default function RecipeCard(props) {
               : props.recipe.name}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            Kcal: {props.recipe.kcal}
+            Kcal: {Number(props.recipe.kcal).toFixed(2)}
           </Typography>
           <Typography variant="body2" color="textSecondary">
             Added: {props.recipe.added.slice(0, 10)}
@@ -62,10 +63,20 @@ export default function RecipeCard(props) {
         <IconButton
           aria-label="add to favorites"
           onClick={() => {
-            window.location = "/recipe/" + props.recipe.id;
+            fetch("http://localhost:5000/favorite", {
+              body: JSON.stringify({
+                username: window.localStorage.getItem("login"),
+                recipe_id: props.recipe.id,
+              }),
+              method: "POST",
+              headers: {
+                Authorization: "Basic YWRtMW46U2VjdXJlUGFzcw==",
+                "Content-Type": "application/json",
+              },
+            }).then((resp) => window.location.reload(false));
           }}
         >
-          <FavoriteIcon />
+          {props.recipe.favorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
         </IconButton>
         <IconButton
           aria-label="learn more"

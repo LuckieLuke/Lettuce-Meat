@@ -25,14 +25,38 @@ with app.app_context():
 
 @app.route('/')
 def main():
-    time.sleep(1)
+    username = request.headers.get('x-user')
+    user = User.query.filter_by(username=username).first()
+    favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
+        user_id=user.id).all()]
+
     recipes = [{
         'id': str(recipe.id),
         'name': str(recipe.name),
         'kcal': str(recipe.kcal),
         'img': str(recipe.image),
-        'added': str(recipe.date_added)
+        'added': str(recipe.date_added),
+        'favorite': True if recipe.id in favorites else False
     } for recipe in Recipe.query.all()]
+
+    return {'msg': recipes}
+
+
+@app.route('/recipes/<type>')
+def get_recipe_of_type(type):
+    username = request.headers.get('x-user')
+    user = User.query.filter_by(username=username).first()
+    favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
+        user_id=user.id).all()]
+
+    recipes = [{
+        'id': str(recipe.id),
+        'name': str(recipe.name),
+        'kcal': str(recipe.kcal),
+        'img': str(recipe.image),
+        'added': str(recipe.date_added),
+        'favorite': True if recipe.id in favorites else False
+    } for recipe in Recipe.query.filter_by(type=type).all()]
     return {'msg': recipes}
 
 
@@ -146,20 +170,20 @@ def recipe():
             part_kcal = float(ing_from_db.kcal) * \
                 (int(amount) / 100)
             full_kcal += part_kcal
-            if ing_from_db.for_vegan:
+            if not ing_from_db.for_vegan:
                 for_vegan += 1
-            if ing_from_db.for_vegetarian:
+            if not ing_from_db.for_vegetarian:
                 for_vegetarian += 1
 
         recipe = Recipe(
             name=body['name'],
-            kcal=full_kcal,
+            kcal=full_kcal / int(body.get('portions')),
             content=body['content'],
             type=body['type'],
             image=body['image'],
             date_added=datetime.now(),
-            for_vegan=for_vegan != 0,
-            for_vegetarian=for_vegetarian != 0
+            for_vegan=for_vegan == 0,
+            for_vegetarian=for_vegetarian == 0
         )
         db.session.add(recipe)
         db.session.commit()
@@ -315,7 +339,18 @@ def menu():
             current_best = combination
             current_best_kcal = kcal
 
-    return make_response({'msg': [x.kcal for x in current_best]}, 200)
+    return make_response({'msg': {
+        'recipes': [
+            {
+                'id': str(recipe.id),
+                'name': str(recipe.name),
+                'kcal': str(recipe.kcal),
+                'img': str(recipe.image),
+                'added': str(recipe.date_added),
+            } for recipe in current_best
+        ],
+        'kcal': current_best_kcal
+    }}, 200)
 
 
 @app.route('/menu/<id>', methods=['GET'])  # get info about menu with id

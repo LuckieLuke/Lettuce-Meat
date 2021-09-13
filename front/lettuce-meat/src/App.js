@@ -9,6 +9,7 @@ import SignUpPage from "./SignUpPage";
 import PrivateRoute from "./PrivateRoute";
 import AddRecipePage from "./AddRecipePage";
 import RecipePage from "./RecipePage";
+import FavoritePage from "./FavoritePage";
 
 class App extends React.Component {
   constructor(props) {
@@ -47,9 +48,8 @@ class App extends React.Component {
             <Route path="/recipes" component={HomePage} />
             <Route path="/recipe" component={RecipePage} />
             <Route path="/addrecipe" component={AddRecipePage} />
-            <PrivateRoute path="/favorites" component={HomePage} />
+            <PrivateRoute path="/favorites" component={FavoritePage} />
             <PrivateRoute path="/menus" component={HomePage} />
-            <PrivateRoute path="/addmenu" component={HomePage} />
             <PrivateRoute path="/createmenu" component={HomePage} />
           </div>
         </Router>

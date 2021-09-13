@@ -2,6 +2,7 @@ import MiniDrawer from "./utils/MiniDrawer";
 import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
+import EcoIcon from "@material-ui/icons/Eco";
 
 import "./App.css";
 import "./recipe.css";
@@ -41,7 +42,9 @@ export default function RecipePage() {
       `http://localhost:5000/recipe/${window.location.pathname.split("/")[2]}`
     )
       .then((resp) => resp.json())
-      .then((info) => setInfo(info));
+      .then((info) => {
+        setInfo(info);
+      });
   }, []);
 
   let generateIngredients = () => {
@@ -69,7 +72,10 @@ export default function RecipePage() {
                 {info.msg.name} ({info.msg.type})
               </h1>
               <img
-                src={info.msg.image}
+                src={
+                  info.msg.image ||
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcSdgQeHNtIa3FoyfnxdS9O8P27OX_qC9JGnikmY00WYCDg3JxsWQ04y78E7FOjQWrC0c&usqp=CAU"
+                }
                 alt={info.msg.name}
                 style={{
                   height: "300px",
@@ -78,6 +84,46 @@ export default function RecipePage() {
                 }}
               />
               <br />
+              {info.msg.for_vegan ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <EcoIcon style={{ display: "inline", color: "#467D0B" }} />
+                  <h3
+                    style={{
+                      color: "#467D0B",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {" "}
+                    Vegan friendly!{" "}
+                  </h3>
+                </div>
+              ) : null}
+              {!info.msg.for_vegan && info.msg.for_vegetarian ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <EcoIcon style={{ display: "inline", color: "#467D0B" }} />
+                  <h3
+                    style={{
+                      color: "#467D0B",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {" "}
+                    Vegetarian friendly!{" "}
+                  </h3>
+                </div>
+              ) : null}
               <br />
               <Paper elevation={3} className={classes.paper}>
                 <div>{generateIngredients()}</div>
@@ -86,6 +132,7 @@ export default function RecipePage() {
               <Paper elevation={3}>
                 <div className={classes.recipe}>
                   <Typography>{info.msg.content}</Typography>
+                  {info.msg.for_vegan}
                 </div>
               </Paper>
             </div>
