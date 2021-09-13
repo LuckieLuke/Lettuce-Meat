@@ -10,6 +10,7 @@ import PrivateRoute from "./PrivateRoute";
 import AddRecipePage from "./AddRecipePage";
 import RecipePage from "./RecipePage";
 import FavoritePage from "./FavoritePage";
+import CreateMenuPage from "./CreateMenuPage";
 
 class App extends React.Component {
   constructor(props) {
@@ -50,7 +51,7 @@ class App extends React.Component {
             <Route path="/addrecipe" component={AddRecipePage} />
             <PrivateRoute path="/favorites" component={FavoritePage} />
             <PrivateRoute path="/menus" component={HomePage} />
-            <PrivateRoute path="/createmenu" component={HomePage} />
+            <PrivateRoute path="/createmenu" component={CreateMenuPage} />
           </div>
         </Router>
       </div>

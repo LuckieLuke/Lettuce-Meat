@@ -52,7 +52,7 @@ export default function RecipeCard(props) {
               : props.recipe.name}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            Kcal: {Number(props.recipe.kcal).toFixed(2)}
+            Kcal: {Number(props.recipe.kcal).toFixed(0)}
           </Typography>
           <Typography variant="body2" color="textSecondary">
             Added: {props.recipe.added.slice(0, 10)}

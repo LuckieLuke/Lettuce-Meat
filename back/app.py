@@ -327,7 +327,6 @@ def menu():
     combinations = list(product(*[Recipe.query.filter_by(
         type=type_of_meal).all() for type_of_meal in meals]))
 
-    log.info(combinations)
     current_best = tuple()
     current_best_kcal = -10000000
 
