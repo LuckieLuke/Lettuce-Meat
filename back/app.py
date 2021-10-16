@@ -335,11 +335,22 @@ def menu():
         if not body.get('meals') or not body.get('kcal') or not body.get('username'):
             return make_response({'msg': 'Some data missing'}, 400)
 
+        user = User.query.filter_by(username=body.get('username')).first()
         meals = body['meals']
         target_kcal = int(body['kcal'])
 
-        combinations = list(product(*[Recipe.query.filter_by(
-            type=type_of_meal).all() for type_of_meal in meals]))
+        combinations = []
+
+        if user.is_vegan:
+            combinations = list(product(*[Recipe.query.filter_by(
+                type=type_of_meal, for_vegan=user.is_vegan).all() for type_of_meal in meals]))
+        elif user.is_vegetarian:
+            combinations = list(product(*[Recipe.query.filter_by(
+                type=type_of_meal, for_vegetarian=user.is_vegetarian).all() for type_of_meal in meals]))
+        else:
+            combinations = list(product(*[Recipe.query.filter_by(
+                type=type_of_meal).all() for type_of_meal in meals]))
+        
 
         current_best = tuple()
         current_best_kcal = -10000000
@@ -352,7 +363,7 @@ def menu():
                 current_best = combination
                 current_best_kcal = kcal
 
-        user = User.query.filter_by(username=body.get('username')).first()
+
         favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
             user_id=user.id).all()]
 
@@ -413,6 +424,9 @@ def menu():
         user = User.query.filter_by(username=username).first()
         favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
             user_id=user.id).all()]
+
+        log.info(user.is_vegan)
+        log.info(len(Recipe.query.filter_by(for_vegan=user.is_vegan).all()))
 
         menus = Menu.query.filter_by(user_id=user.id).all()
         resp_recipes = []

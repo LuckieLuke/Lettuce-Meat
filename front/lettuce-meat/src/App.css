@@ -1,10 +1,16 @@
 html {
   background-color: #fafafa;
   color: white;
+  height: 100%;
+}
+
+body {
+  height: 100%;
 }
 
 .App {
   text-align: center;
+  height: 100%;
 }
 
 .App-logo {
@@ -37,4 +43,8 @@ html {
 .ingredientInput {
   width: 140px;
   margin: 10px;
+}
+
+#root {
+  height: 100%;
 }

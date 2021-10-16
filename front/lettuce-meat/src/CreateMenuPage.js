@@ -9,7 +9,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 
 import "./App.css";
 import "./recipe.css";
@@ -43,21 +43,21 @@ const useStyles = makeStyles({
     fontWeight: "600",
   },
   kcal: {
-    paddingTop: "20px"
+    paddingTop: "20px",
   },
   menus: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   previous: {
     width: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 });
 
 export default function CreateMenuPage() {
@@ -81,7 +81,7 @@ export default function CreateMenuPage() {
 
   useEffect(() => {
     generatePrevious();
-  }, [])
+  }, []);
 
   const { breakfast, snack, lunch, dinner, supper } = state;
   const error =
@@ -89,57 +89,59 @@ export default function CreateMenuPage() {
 
   const generate = () => {
     let meals = [];
-    for(let meal in state) {
-      if(state[meal]) meals.push(meal);
+    for (let meal in state) {
+      if (state[meal]) meals.push(meal);
     }
-    
-    fetch('http://localhost:5000/menu', {
-      method: 'POST',
+
+    fetch("http://localhost:5000/menu", {
+      method: "POST",
       body: JSON.stringify({
         meals,
-        kcal: document.querySelector('#kcal').value,
-        username: window.sessionStorage.getItem('login')
+        kcal: document.querySelector("#kcal").value,
+        username: window.sessionStorage.getItem("login"),
       }),
       headers: {
         Authorization: "Basic YWRtMW46U2VjdXJlUGFzcw==",
         "Content-Type": "application/json",
       },
-    }).then(info => info.json())
-    .then(resp => { 
-      for(let recipe of resp.msg.recipes) {
-        menuKcal += parseFloat(recipe.kcal);
-      }
-      setMenu(resp.msg.recipes);
-      isMenu = true;
-      generatePrevious();
     })
-  }
+      .then((info) => info.json())
+      .then((resp) => {
+        for (let recipe of resp.msg.recipes) {
+          menuKcal += parseFloat(recipe.kcal);
+        }
+        setMenu(resp.msg.recipes);
+        isMenu = true;
+        generatePrevious();
+      });
+  };
 
   const generatePrevious = () => {
-    fetch('http://localhost:5000/menu', {
-      method: 'GET',
+    fetch("http://localhost:5000/menu", {
+      method: "GET",
       headers: {
         Authorization: "Basic YWRtMW46U2VjdXJlUGFzcw==",
         "Content-Type": "application/json",
-        "x-user": window.sessionStorage.getItem("login")
+        "x-user": window.sessionStorage.getItem("login"),
       },
-    }).then(resp => resp.json())
-    .then(info => {
-      let menus = info.msg.filter(menu => {
-        let kcal = 0.0;
-        for(let recipe of menu) {
-          kcal += parseFloat(recipe.kcal);
+    })
+      .then((resp) => resp.json())
+      .then((info) => {
+        let menus = info.msg.filter((menu) => {
+          let kcal = 0.0;
+          for (let recipe of menu) {
+            kcal += parseFloat(recipe.kcal);
+          }
+          return kcal !== menuKcal;
+        });
+
+        if (isMenu) {
+          setPreviousMenus(menus.slice(-3).reverse().slice(-2));
+        } else {
+          setPreviousMenus(menus.slice(-3).reverse());
         }
-        return kcal !== menuKcal;
       });
-      
-      if (isMenu) {
-        setPreviousMenus(menus.slice(-3).reverse().slice(-2))
-      } else {
-        setPreviousMenus(menus.slice(-4).reverse().slice(-3))
-      }
-    });
-  }
+  };
 
   return (
     <MiniDrawer
@@ -218,11 +220,21 @@ export default function CreateMenuPage() {
                 2. How many calories do you need?
               </Typography>
               <div className={classes.kcal}>
-                <TextField id="kcal" label="Calories" variant="filled" required/>
+                <TextField
+                  id="kcal"
+                  label="Calories"
+                  variant="filled"
+                  required
+                />
               </div>
             </div>
           </div>
-          <Button variant="contained" color="primary" size="large" onClick={generate}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={generate}
+          >
             Generate menu
           </Button>
           <div className={classes.menus}>
@@ -232,9 +244,11 @@ export default function CreateMenuPage() {
               <Typography className={classes.question2}>
                 Previous menus:
               </Typography>
-              {previousMenus.length 
-              ? previousMenus.map(menu => (<MenuPres recipes={menu} key={Math.random()}/>))
-              : null}
+              {previousMenus.length
+                ? previousMenus.map((menu) => (
+                    <MenuPres recipes={menu} key={Math.random()} />
+                  ))
+                : null}
             </div>
           </div>
         </div>

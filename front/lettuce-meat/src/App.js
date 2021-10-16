@@ -11,6 +11,7 @@ import AddRecipePage from "./AddRecipePage";
 import RecipePage from "./RecipePage";
 import FavoritePage from "./FavoritePage";
 import CreateMenuPage from "./CreateMenuPage";
+import MenusPage from "./MenusPage";
 
 class App extends React.Component {
   constructor(props) {
@@ -50,7 +51,7 @@ class App extends React.Component {
             <Route path="/recipe" component={RecipePage} />
             <Route path="/addrecipe" component={AddRecipePage} />
             <PrivateRoute path="/favorites" component={FavoritePage} />
-            <PrivateRoute path="/menus" component={HomePage} />
+            <PrivateRoute path="/menus" component={MenusPage} />
             <PrivateRoute path="/createmenu" component={CreateMenuPage} />
           </div>
         </Router>
