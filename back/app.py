@@ -353,6 +353,8 @@ def menu():
                 current_best_kcal = kcal
 
         user = User.query.filter_by(username=body.get('username')).first()
+        favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
+            user_id=user.id).all()]
 
         # check if the same menu exists
         menu = Menu.query.filter_by(
@@ -366,6 +368,7 @@ def menu():
                         'kcal': str(recipe.kcal),
                         'img': str(recipe.image),
                         'added': str(recipe.date_added),
+                        'favorite': True if recipe.id in favorites else False
                     } for recipe in current_best
                 ],
                 'kcal': current_best_kcal
@@ -408,6 +411,8 @@ def menu():
         if not username:
             return make_response({'msg': 'Username missing'}, 400)
         user = User.query.filter_by(username=username).first()
+        favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
+            user_id=user.id).all()]
 
         menus = Menu.query.filter_by(user_id=user.id).all()
         resp_recipes = []
@@ -421,6 +426,7 @@ def menu():
                     'kcal': str(Recipe.query.filter_by(id=id).first().kcal),
                     'img': str(Recipe.query.filter_by(id=id).first().image),
                     'added': str(Recipe.query.filter_by(id=id).first().date_added),
+                    'favorite': True if id in favorites else False
                 } for id in menu_recipe_ids
             ]
             resp_recipes.append(menu_recipes)

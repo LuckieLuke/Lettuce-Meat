@@ -16,7 +16,7 @@ export default function MenuPres(props) {
     const classes = useStyles();
 
     const getRecipeCards = () => {
-        return props.recipes.map(recipe => (<RecipeCard recipe={recipe} key={recipe.id} />))
+        return props.recipes.map(recipe => (<RecipeCard recipe={recipe} key={recipe.id} handleFav={() => window.location.reload(false)}/>))
     }
 
     return (

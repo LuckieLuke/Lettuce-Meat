@@ -62,7 +62,7 @@ export default function RecipeCard(props) {
       <CardActions className={classes.actions}>
         <IconButton
           aria-label="add to favorites"
-          onClick={() => {
+          onClick={(e) => {
             fetch("http://localhost:5000/favorite", {
               body: JSON.stringify({
                 username: window.sessionStorage.getItem("login"),
@@ -73,7 +73,7 @@ export default function RecipeCard(props) {
                 Authorization: "Basic YWRtMW46U2VjdXJlUGFzcw==",
                 "Content-Type": "application/json",
               },
-            }).then((resp) => window.location.reload(false));
+            }).then((resp) => props.handleFav());
           }}
         >
           {props.recipe.favorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}

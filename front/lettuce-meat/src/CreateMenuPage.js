@@ -234,7 +234,7 @@ export default function CreateMenuPage() {
               </Typography>
               {previousMenus.length 
               ? previousMenus.map(menu => (<MenuPres recipes={menu} key={Math.random()}/>))
-              : console.log('problem')}
+              : null}
             </div>
           </div>
         </div>

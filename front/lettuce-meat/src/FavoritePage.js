@@ -66,7 +66,7 @@ export default function FavoritePage(props) {
     const recipes = info
       .slice(numOfRecipes * (currentPage - 1), numOfRecipes * currentPage)
       .map((recipe) => {
-        return <RecipeCard recipe={recipe} key={recipe.id} />;
+        return <RecipeCard recipe={recipe} key={recipe.id} handleFav={() => window.location.reload(false)}/>;
       });
 
     return recipes;

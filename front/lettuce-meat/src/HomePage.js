@@ -65,18 +65,25 @@ export default function HomePage(props) {
       .sort((a, b) => b.id - a.id)
       .slice(numOfRecipes * (currentPage - 1), numOfRecipes * currentPage)
       .map((recipe) => {
-        return <RecipeCard recipe={recipe} key={recipe.id} />;
+        return <RecipeCard recipe={recipe} key={recipe.id} handleFav={handleFavState} />;
       });
 
     return recipes;
   };
 
+  let handleFavState = () => {
+    reload_cards(type)
+  }
+
   let handleChangeType = (e) => {
     setType(e.target.value);
     setWaiting(true);
+    reload_cards(e.target.value);
+  };
 
-    if (e.target.value !== "all") {
-      fetch(`http://localhost:5000/recipes/${e.target.value}`, {
+  let reload_cards = (type) => {
+    if (type !== "all") {
+      fetch(`http://localhost:5000/recipes/${type}`, {
         headers: { "x-user": window.sessionStorage.getItem("login") },
       })
         .then((resp) => resp.json())
@@ -108,7 +115,7 @@ export default function HomePage(props) {
           setInfo("PROBLEM");
         });
     }
-  };
+  }
 
   return (
     <MiniDrawer
