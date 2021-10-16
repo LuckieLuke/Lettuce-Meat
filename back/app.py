@@ -26,20 +26,32 @@ with app.app_context():
 @app.route('/')
 def main():
     username = request.headers.get('x-user')
-    user = User.query.filter_by(username=username).first()
-    favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
-        user_id=user.id).all()]
 
-    recipes = [{
-        'id': str(recipe.id),
-        'name': str(recipe.name),
-        'kcal': str(recipe.kcal),
-        'img': str(recipe.image),
-        'added': str(recipe.date_added),
-        'favorite': True if recipe.id in favorites else False
-    } for recipe in Recipe.query.all()]
+    if username != 'null':
+        user = User.query.filter_by(username=username).first()
+        favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
+            user_id=user.id).all()]
 
-    return {'msg': recipes}
+        recipes = [{
+            'id': str(recipe.id),
+            'name': str(recipe.name),
+            'kcal': str(recipe.kcal),
+            'img': str(recipe.image),
+            'added': str(recipe.date_added),
+            'favorite': True if recipe.id in favorites else False
+        } for recipe in Recipe.query.all()]
+
+        return {'msg': recipes}
+    else:
+        recipes = [{
+            'id': str(recipe.id),
+            'name': str(recipe.name),
+            'kcal': str(recipe.kcal),
+            'img': str(recipe.image),
+            'added': str(recipe.date_added)
+        } for recipe in Recipe.query.all()]
+
+        return {'msg': recipes}
 
 
 @app.route('/recipes/<type>')
@@ -60,6 +72,7 @@ def get_recipe_of_type(type):
     return {'msg': recipes}
 
 
+# TODO jeśli email już istnieje to wywalić błąd!
 @app.route('/register', methods=['POST'])
 def register():
     form = request.form
@@ -322,7 +335,7 @@ def menu():
         return make_response({'msg': 'Some data missing'}, 400)
 
     meals = body['meals']
-    target_kcal = body['kcal']
+    target_kcal = int(body['kcal'])
 
     combinations = list(product(*[Recipe.query.filter_by(
         type=type_of_meal).all() for type_of_meal in meals]))

@@ -75,7 +75,7 @@ export default function InputTable(props) {
         variant="contained"
         color="primary"
         onClick={() => {
-          window.localStorage.setItem("ingredients", JSON.stringify(numbers));
+          window.sessionStorage.setItem("ingredients", JSON.stringify(numbers));
           props.handleSubmit(numbers);
         }}
       >

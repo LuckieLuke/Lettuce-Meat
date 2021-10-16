@@ -21,8 +21,8 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    let auth = window.localStorage.getItem("au_co");
-    let uname = window.localStorage.getItem("login");
+    let auth = window.sessionStorage.getItem("au_co");
+    let uname = window.sessionStorage.getItem("login");
     let now = sha512(new Date().toISOString().slice(0, 10).toString());
 
     if (uname && auth === now) {

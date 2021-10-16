@@ -97,8 +97,8 @@ const handleLogIn = () => {
 };
 
 const handleLogOut = () => {
-  window.localStorage.removeItem("login");
-  window.localStorage.removeItem("au_co");
+  window.sessionStorage.removeItem("login");
+  window.sessionStorage.removeItem("au_co");
   window.location = "/";
 };
 

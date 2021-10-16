@@ -47,7 +47,7 @@ export default function AddRecipePage(props) {
 
   let saveRecipe = () => {
     let url = "http://localhost:5000/recipe";
-    let ingredients = window.localStorage.getItem("ingredients") || "";
+    let ingredients = window.sessionStorage.getItem("ingredients") || "";
 
     fetch(url, {
       method: "POST",

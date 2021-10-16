@@ -1,4 +1,6 @@
 import MiniDrawer from "./utils/MiniDrawer";
+import MenuPres from "./utils/MenuPres";
+
 import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
@@ -7,6 +9,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
+import TextField from '@material-ui/core/TextField';
 
 import "./App.css";
 import "./recipe.css";
@@ -34,6 +37,15 @@ const useStyles = makeStyles({
     fontSize: "25px",
     fontWeight: "600",
   },
+  kcal: {
+    paddingTop: "20px"
+  },
+  menus: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
+  }
 });
 
 export default function CreateMenuPage() {
@@ -46,6 +58,7 @@ export default function CreateMenuPage() {
     dinner: false,
     supper: false,
   });
+  const [menu, setMenu] = useState([]);
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -55,6 +68,26 @@ export default function CreateMenuPage() {
   const error =
     [breakfast, snack, lunch, dinner, supper].filter((v) => v).length < 2;
 
+  const generate = () => {
+    let meals = [];
+    for(let meal in state) {
+      if(state[meal]) meals.push(meal);
+    }
+    
+    fetch('http://localhost:5000/menu', {
+      method: 'POST',
+      body: JSON.stringify({
+        meals,
+        kcal: document.querySelector('#kcal').value
+      }),
+      headers: {
+        Authorization: "Basic YWRtMW46U2VjdXJlUGFzcw==",
+        "Content-Type": "application/json",
+      },
+    }).then(info => info.json())
+    .then(resp => setMenu(resp.msg.recipes))
+  }
+
   return (
     <MiniDrawer
       content={
@@ -62,7 +95,7 @@ export default function CreateMenuPage() {
           <div className={classes.menuInfo}>
             <div className={classes.half}>
               <Typography className={classes.question}>
-                1. Choose wanted meal types:
+                1. Choose meal types:
               </Typography>
               <FormControl
                 required
@@ -131,11 +164,17 @@ export default function CreateMenuPage() {
               <Typography className={classes.question}>
                 2. How many calories do you need?
               </Typography>
+              <div className={classes.kcal}>
+                <TextField id="kcal" label="Calories" variant="filled" required/>
+              </div>
             </div>
           </div>
-          <Button variant="contained" color="primary" size="large">
+          <Button variant="contained" color="primary" size="large" onClick={generate}>
             Generate menu
           </Button>
+          <div className={classes.menus}>
+            {menu.length ? <MenuPres recipes={menu} /> : null}
+          </div>
         </div>
       }
     />

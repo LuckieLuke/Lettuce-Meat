@@ -35,7 +35,7 @@ export default function FavoritePage(props) {
   useEffect(() => {
     setWaiting(true);
     fetch("http://localhost:5000", {
-      headers: { "x-user": window.localStorage.getItem("login") },
+      headers: { "x-user": window.sessionStorage.getItem("login") },
     })
       .then((resp) => resp.json())
       .then((response) => {
@@ -78,7 +78,7 @@ export default function FavoritePage(props) {
 
     if (e.target.value !== "all") {
       fetch(`http://localhost:5000/recipes/${e.target.value}`, {
-        headers: { "x-user": window.localStorage.getItem("login") },
+        headers: { "x-user": window.sessionStorage.getItem("login") },
       })
         .then((resp) => resp.json())
         .then((response) => {
@@ -97,7 +97,7 @@ export default function FavoritePage(props) {
         });
     } else {
       fetch("http://localhost:5000", {
-        headers: { "x-user": window.localStorage.getItem("login") },
+        headers: { "x-user": window.sessionStorage.getItem("login") },
       })
         .then((resp) => resp.json())
         .then((response) => {

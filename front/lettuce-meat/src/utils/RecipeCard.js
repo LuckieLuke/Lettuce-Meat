@@ -65,7 +65,7 @@ export default function RecipeCard(props) {
           onClick={() => {
             fetch("http://localhost:5000/favorite", {
               body: JSON.stringify({
-                username: window.localStorage.getItem("login"),
+                username: window.sessionStorage.getItem("login"),
                 recipe_id: props.recipe.id,
               }),
               method: "POST",

@@ -106,8 +106,8 @@ class Menu_recipe(db.Model):
 
 class Menu(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    kcal = db.Column(db.Integer, nullable=False)
     # recipes są w tabeli menu_recipe i mają tutejsze id jako swoje menu_id
+    kcal = db.Column(db.Integer, nullable=False)
     for_vegan = db.Column(db.Boolean, nullable=False)
     for_vegetarian = db.Column(db.Boolean, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(
