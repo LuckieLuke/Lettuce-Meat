@@ -8,6 +8,7 @@ const useStyles = makeStyles({
         border: "1px solid black",
         borderRadius: "2px",
         margin: "10px 0",
+        flexWrap: "wrap"
     }
 });
 
@@ -15,7 +16,6 @@ export default function MenuPres(props) {
     const classes = useStyles();
 
     const getRecipeCards = () => {
-        console.log(props.recipes)
         return props.recipes.map(recipe => (<RecipeCard recipe={recipe} key={recipe.id} />))
     }
 

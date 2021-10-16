@@ -1,5 +1,5 @@
-from back.model import User, db, Ingredient, Recipe, Recipe_ingredient, Favorite_recipe
-#from model import User, db, Ingredient, Recipe, Recipe_ingredient, Favorite_recipe
+from back.model import User, db, Ingredient, Recipe, Recipe_ingredient, Favorite_recipe, Menu, Menu_recipe
+#from model import User, db, Ingredient, Recipe, Recipe_ingredient, Favorite_recipe, Menu, Menu_recipe
 from flask import Flask, make_response, request, jsonify
 from flask_cors import CORS
 import json
@@ -327,52 +327,105 @@ def get_menus():
     return json.dumps({'msg': 'here are all your menus'})
 
 
-@app.route('/menu', methods=['POST'])  # automatic creating menus
+@app.route('/menu', methods=['POST', 'GET'])  # automatic creating menus
 def menu():
-    body = request.json
+    if request.method == 'POST':
+        body = request.json
 
-    if not body.get('meals') or not body.get('kcal'):
-        return make_response({'msg': 'Some data missing'}, 400)
+        if not body.get('meals') or not body.get('kcal') or not body.get('username'):
+            return make_response({'msg': 'Some data missing'}, 400)
 
-    meals = body['meals']
-    target_kcal = int(body['kcal'])
+        meals = body['meals']
+        target_kcal = int(body['kcal'])
 
-    combinations = list(product(*[Recipe.query.filter_by(
-        type=type_of_meal).all() for type_of_meal in meals]))
+        combinations = list(product(*[Recipe.query.filter_by(
+            type=type_of_meal).all() for type_of_meal in meals]))
 
-    current_best = tuple()
-    current_best_kcal = -10000000
+        current_best = tuple()
+        current_best_kcal = -10000000
 
-    for combination in combinations:
-        kcal = 0
-        for recipe in combination:
-            kcal += recipe.kcal
-        if abs(current_best_kcal - target_kcal) > abs(kcal - target_kcal):
-            current_best = combination
-            current_best_kcal = kcal
+        for combination in combinations:
+            kcal = 0
+            for recipe in combination:
+                kcal += recipe.kcal
+            if abs(current_best_kcal - target_kcal) > abs(kcal - target_kcal):
+                current_best = combination
+                current_best_kcal = kcal
 
-    return make_response({'msg': {
-        'recipes': [
-            {
-                'id': str(recipe.id),
-                'name': str(recipe.name),
-                'kcal': str(recipe.kcal),
-                'img': str(recipe.image),
-                'added': str(recipe.date_added),
-            } for recipe in current_best
-        ],
-        'kcal': current_best_kcal
-    }}, 200)
+        user = User.query.filter_by(username=body.get('username')).first()
 
+        # check if the same menu exists
+        menu = Menu.query.filter_by(
+            user_id=user.id, kcal=current_best_kcal).first()
+        if menu:
+            return make_response({'msg': {
+                'recipes': [
+                    {
+                        'id': str(recipe.id),
+                        'name': str(recipe.name),
+                        'kcal': str(recipe.kcal),
+                        'img': str(recipe.image),
+                        'added': str(recipe.date_added),
+                    } for recipe in current_best
+                ],
+                'kcal': current_best_kcal
+            }}, 200)
 
-@app.route('/menu/<id>', methods=['GET'])  # get info about menu with id
-def get_menu(id):
-    return json.dumps({'msg': 'here are all your menus'})
+        menu = Menu(
+            kcal=current_best_kcal,
+            for_vegan=all(recipe.for_vegan for recipe in current_best),
+            for_vegetarian=all(
+                recipe.for_vegetarian for recipe in current_best),
+            user_id=user.id
+        )
+        db.session.add(menu)
+        db.session.commit()
 
+        menu = Menu.query.filter_by(user_id=user.id).all()[-1]
+        for recipe in current_best:
+            menu_recipe = Menu_recipe(
+                menu_id=menu.id,
+                recipe_id=recipe.id
+            )
+            db.session.add(menu_recipe)
+        db.session.commit()
 
-@app.route('/manualmenu', methods=['POST'])
-def manual_menu():
-    return json.dumps({'msg': 'here are all your menus'})
+        return make_response({'msg': {
+            'recipes': [
+                {
+                    'id': str(recipe.id),
+                    'name': str(recipe.name),
+                    'kcal': str(recipe.kcal),
+                    'img': str(recipe.image),
+                    'added': str(recipe.date_added),
+                } for recipe in current_best
+            ],
+            'kcal': current_best_kcal
+        }}, 200)
+    else:
+        username = request.headers.get('x-user')
+
+        if not username:
+            return make_response({'msg': 'Username missing'}, 400)
+        user = User.query.filter_by(username=username).first()
+
+        menus = Menu.query.filter_by(user_id=user.id).all()
+        resp_recipes = []
+        for menu in menus:
+            menu_recipe_ids = [menu_recipe.recipe_id for menu_recipe in Menu_recipe.query.filter_by(
+                menu_id=menu.id).all()]
+            menu_recipes = [
+                {
+                    'id': str(Recipe.query.filter_by(id=id).first().id),
+                    'name': str(Recipe.query.filter_by(id=id).first().name),
+                    'kcal': str(Recipe.query.filter_by(id=id).first().kcal),
+                    'img': str(Recipe.query.filter_by(id=id).first().image),
+                    'added': str(Recipe.query.filter_by(id=id).first().date_added),
+                } for id in menu_recipe_ids
+            ]
+            resp_recipes.append(menu_recipes)
+
+        return json.dumps({'msg': resp_recipes})
 
 
 if __name__ == '__main__':
