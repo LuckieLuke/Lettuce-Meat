@@ -131,7 +131,13 @@ export default function RecipePage() {
               <br />
               <Paper elevation={3}>
                 <div className={classes.recipe}>
-                  <Typography>{info.msg.content}</Typography>
+                  <Typography>
+                    {info.msg.content.split("\n").map((line) => (
+                      <span style={{ display: "block" }} key={Math.random()}>
+                        {line}
+                      </span>
+                    ))}
+                  </Typography>
                   {info.msg.for_vegan}
                 </div>
               </Paper>

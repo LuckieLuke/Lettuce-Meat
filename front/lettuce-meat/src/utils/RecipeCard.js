@@ -11,6 +11,14 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import Button from "@mui/material/Button";
+
 const useStyles = makeStyles({
   root: {
     maxWidth: 275,
@@ -27,8 +35,26 @@ const useStyles = makeStyles({
   },
 });
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export default function RecipeCard(props) {
   const classes = useStyles();
+
+  const [open, setOpen] = React.useState(false);
+  const [recipe, setRecipe] = React.useState({});
+
+  const handleClickOpen = () => {
+    fetch(`http://localhost:5000/recipe/${props.recipe.id}`)
+      .then((resp) => resp.json())
+      .then((info) => setRecipe(info.msg));
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Card className={classes.root}>
@@ -78,15 +104,33 @@ export default function RecipeCard(props) {
         >
           {props.recipe.favorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
         </IconButton>
-        <IconButton
-          aria-label="learn more"
-          onClick={() => {
-            window.location = "/recipe/" + props.recipe.id;
-          }}
-        >
+        <IconButton aria-label="learn more" onClick={handleClickOpen}>
           <ExpandMoreIcon />
         </IconButton>
       </CardActions>
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{recipe.name}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {recipe.content
+              ? recipe.content.split("\n").map((line) => (
+                  <span style={{ display: "block" }} key={Math.random()}>
+                    {line}
+                  </span>
+                ))
+              : null}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 }
