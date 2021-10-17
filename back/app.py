@@ -78,6 +78,11 @@ def register():
     form = request.form
     username = form.get('username')
     email = form.get('email')
+
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return make_response(json.dumps({'msg': 'email already exists'}), 403)
+
     password = form.get('password').encode('utf-8')
     hashed = hashlib.sha512(password).hexdigest()
     is_vegan = form.get('isVegan') is not None

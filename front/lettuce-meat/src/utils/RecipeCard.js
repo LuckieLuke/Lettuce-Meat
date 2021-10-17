@@ -22,7 +22,7 @@ import Button from "@mui/material/Button";
 const useStyles = makeStyles({
   root: {
     maxWidth: 275,
-    minWidth: 275,
+    minWidth: 250,
     margin: 10,
     padding: 10,
   },
@@ -115,7 +115,9 @@ export default function RecipeCard(props) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{recipe.name}</DialogTitle>
+        <DialogTitle>
+          {recipe.name} ({recipe.kcal ? parseInt(recipe.kcal) : null} kcal)
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             {recipe.content

@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginPage(props) {
   const classes = useStyles();
   const form = useRef(null);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(0);
 
   let sendSignIn = (event) => {
     event.preventDefault();
@@ -60,25 +60,22 @@ export default function LoginPage(props) {
       method: "POST",
       body: new FormData(form.current),
     })
-      .then((resp) => {
-        if (resp.ok) {
-          return resp.json();
-        } else {
-          window.location = "/login";
-          window.location.reload();
-        }
-      })
+      .then((resp) => resp.json())
       .then((info) => {
-        window.sessionStorage.setItem("login", info.login);
+        if (info.login) {
+          window.sessionStorage.setItem("login", info.login);
 
-        let now = new Date().toISOString().slice(0, 10).toString();
-        let authCode = sha512(now);
-        window.sessionStorage.setItem("au_co", authCode);
+          let now = new Date().toISOString().slice(0, 10).toString();
+          let authCode = sha512(now);
+          window.sessionStorage.setItem("au_co", authCode);
 
-        setTimeout(() => {
-          setIsSuccess(true);
-        }, 250);
-        setTimeout(() => (window.location = "/"), 750);
+          setTimeout(() => {
+            setIsSuccess(true);
+          }, 250);
+          setTimeout(() => (window.location = "/"), 750);
+        } else {
+          setIsSuccess(false);
+        }
       });
   };
   return (
@@ -144,8 +141,10 @@ export default function LoginPage(props) {
                   </Grid>
                 </Grid>
                 <br />
-                {isSuccess ? (
+                {isSuccess === true ? (
                   <Alert severity="success">Successfully logged in!</Alert>
+                ) : isSuccess === false ? (
+                  <Alert severity="error">Wrong email or password!</Alert>
                 ) : null}
               </form>
             </div>
