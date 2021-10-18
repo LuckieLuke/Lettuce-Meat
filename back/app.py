@@ -57,21 +57,30 @@ def main():
 def get_recipe_of_type(type):
     username = request.headers.get('x-user')
     user = User.query.filter_by(username=username).first()
-    favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
-        user_id=user.id).all()]
+    if user:
+        favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
+            user_id=user.id).all()]
 
-    recipes = [{
-        'id': str(recipe.id),
-        'name': str(recipe.name),
-        'kcal': str(recipe.kcal),
-        'img': str(recipe.image),
-        'added': str(recipe.date_added),
-        'favorite': True if recipe.id in favorites else False
-    } for recipe in Recipe.query.filter_by(type=type).all()]
-    return {'msg': recipes}
+        recipes = [{
+            'id': str(recipe.id),
+            'name': str(recipe.name),
+            'kcal': str(recipe.kcal),
+            'img': str(recipe.image),
+            'added': str(recipe.date_added),
+            'favorite': True if recipe.id in favorites else False
+        } for recipe in Recipe.query.filter_by(type=type).all()]
+        return {'msg': recipes}
+    else:
+        recipes = [{
+            'id': str(recipe.id),
+            'name': str(recipe.name),
+            'kcal': str(recipe.kcal),
+            'img': str(recipe.image),
+            'added': str(recipe.date_added)
+        } for recipe in Recipe.query.filter_by(type=type).all()]
+        return {'msg': recipes}
 
 
-# TODO jeśli email już istnieje to wywalić błąd!
 @app.route('/register', methods=['POST'])
 def register():
     form = request.form
@@ -331,7 +340,7 @@ def get_menus():
     return json.dumps({'msg': 'here are all your menus'})
 
 
-@app.route('/menu', methods=['POST', 'GET'])  # automatic creating menus
+@app.route('/menu', methods=['POST', 'GET'])
 def menu():
     if request.method == 'POST':
         body = request.json
@@ -367,11 +376,9 @@ def menu():
                 current_best = combination
                 current_best_kcal = kcal
 
-
         favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
             user_id=user.id).all()]
 
-        # check if the same menu exists
         menu = Menu.query.filter_by(
             user_id=user.id, kcal=current_best_kcal).first()
         if menu:

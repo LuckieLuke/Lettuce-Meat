@@ -116,7 +116,8 @@ export default function RecipeCard(props) {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle>
-          {recipe.name} ({recipe.kcal ? parseInt(recipe.kcal) : null} kcal)
+          {recipe.name} ({recipe.kcal ? parseInt(recipe.kcal) : null} kcal per
+          portion)
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
