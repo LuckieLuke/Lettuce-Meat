@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper";
 const useStyles = makeStyles({
   shelf: {
     display: "flex",
-    margin: "10px 0",
+    margin: "10px",
     flexWrap: "wrap",
   },
 });

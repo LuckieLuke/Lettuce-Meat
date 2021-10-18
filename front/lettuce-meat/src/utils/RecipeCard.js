@@ -21,8 +21,8 @@ import Button from "@mui/material/Button";
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 275,
-    minWidth: 250,
+    maxWidth: 260,
+    minWidth: 260,
     margin: 10,
     padding: 10,
   },
