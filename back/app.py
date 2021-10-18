@@ -1,6 +1,5 @@
 from back.model import User, db, Ingredient, Recipe, Recipe_ingredient, Favorite_recipe, Menu, Menu_recipe
-#from model import User, db, Ingredient, Recipe, Recipe_ingredient, Favorite_recipe, Menu, Menu_recipe
-from flask import Flask, make_response, request, jsonify
+from flask import Flask, make_response, request
 from flask_cors import CORS
 import json
 import time
@@ -429,9 +428,6 @@ def menu():
         user = User.query.filter_by(username=username).first()
         favorites = [recipe.recipe_id for recipe in Favorite_recipe.query.filter_by(
             user_id=user.id).all()]
-
-        log.info(user.is_vegan)
-        log.info(len(Recipe.query.filter_by(for_vegan=user.is_vegan).all()))
 
         menus = Menu.query.filter_by(user_id=user.id).all()
         resp_recipes = []

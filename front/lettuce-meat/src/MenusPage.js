@@ -18,10 +18,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MenusPage(props) {
   const classes = useStyles();
-  const [currentPage, setCurrentPage] = useState(1);
   const [menus, setMenus] = useState([]);
   const [counter, setCounter] = useState(1);
   const [visibleMenus, setVisibleMenus] = useState([]);
+  const seenMenus = 2;
 
   useEffect(() => {
     fetch("http://localhost:5000/menu", {
@@ -33,15 +33,14 @@ export default function MenusPage(props) {
       .then((resp) => resp.json())
       .then((info) => {
         setMenus(info.msg);
-        setCurrentPage(1);
-        setVisibleMenus(info.msg.slice(0, 3));
-        setCounter(Math.ceil(menus.length / 3));
+        setVisibleMenus(info.msg.slice(0, seenMenus));
+        setCounter(Math.ceil(menus.length / seenMenus));
       });
   }, [menus.length]);
 
   const resetVisible = (value) => {
     console.log(menus);
-    setVisibleMenus(menus.slice(3 * (value - 1), 3 * value));
+    setVisibleMenus(menus.slice(seenMenus * (value - 1), seenMenus * value));
   };
 
   return (
@@ -53,7 +52,6 @@ export default function MenusPage(props) {
             count={counter}
             color="primary"
             onChange={(event, value) => {
-              setCurrentPage(value);
               resetVisible(value);
             }}
           />

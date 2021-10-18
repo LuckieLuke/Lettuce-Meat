@@ -136,9 +136,9 @@ export default function CreateMenuPage() {
         });
 
         if (isMenu) {
-          setPreviousMenus(menus.slice(-3).reverse().slice(-2));
+          setPreviousMenus(menus.slice(-2).reverse().slice(-1));
         } else {
-          setPreviousMenus(menus.slice(-3).reverse());
+          setPreviousMenus(menus.slice(-2).reverse());
         }
       });
   };
