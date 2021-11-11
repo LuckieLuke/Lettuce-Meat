@@ -7,6 +7,7 @@ import hashlib
 import base64
 from datetime import datetime
 from itertools import product
+import redis
 
 
 app = Flask(__name__)
@@ -16,6 +17,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
+red = redis.Redis(host='lettuce-meat_redis-db_1',
+                 port=6379, decode_responses=True)
+
 log = app.logger
 
 with app.app_context():
@@ -24,6 +28,10 @@ with app.app_context():
 
 @app.route('/')
 def main():
+    '''
+    function responses with all recipes and if the user is logged in, 
+    additional info about favorite recipes is included
+    '''
     username = request.headers.get('x-user')
 
     if username != 'null':
@@ -55,6 +63,9 @@ def main():
 
 @app.route('/recipes/<type>')
 def get_recipe_of_type(type):
+    '''
+    function that replies with all recipes from the DB but filtered by their type
+    '''
     username = request.headers.get('x-user')
     user = User.query.filter_by(username=username).first()
     if user:
@@ -83,6 +94,10 @@ def get_recipe_of_type(type):
 
 @app.route('/register', methods=['POST'])
 def register():
+    '''
+    function that get registration info and 
+    creates user in the DB
+    '''
     form = request.form
     username = form.get('username')
     email = form.get('email')

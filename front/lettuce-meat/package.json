@@ -15,9 +15,11 @@
     "js-sha512": "^0.8.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-redux": "^7.2.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-window": "^1.8.6",
+    "redux": "^4.1.2",
     "web-vitals": "^1.1.1"
   },
   "scripts": {
