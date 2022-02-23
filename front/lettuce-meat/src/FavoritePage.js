@@ -66,7 +66,13 @@ export default function FavoritePage(props) {
     const recipes = info
       .slice(numOfRecipes * (currentPage - 1), numOfRecipes * currentPage)
       .map((recipe) => {
-        return <RecipeCard recipe={recipe} key={recipe.id} handleFav={() => window.location.reload(false)}/>;
+        return (
+          <RecipeCard
+            recipe={recipe}
+            key={recipe.id}
+            handleFav={() => window.location.reload(false)}
+          />
+        );
       });
 
     return recipes;
@@ -120,7 +126,7 @@ export default function FavoritePage(props) {
     <MiniDrawer
       content={
         <div className="content">
-          <h1>Our new findings:</h1>
+          <h1>Your favorites:</h1>
           <Pagination
             count={allPagesCounter}
             color="primary"

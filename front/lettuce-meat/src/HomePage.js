@@ -65,15 +65,21 @@ export default function HomePage(props) {
       .sort((a, b) => b.id - a.id)
       .slice(numOfRecipes * (currentPage - 1), numOfRecipes * currentPage)
       .map((recipe) => {
-        return <RecipeCard recipe={recipe} key={recipe.id} handleFav={handleFavState} />;
+        return (
+          <RecipeCard
+            recipe={recipe}
+            key={recipe.id}
+            handleFav={handleFavState}
+          />
+        );
       });
 
     return recipes;
   };
 
   let handleFavState = () => {
-    reload_cards(type)
-  }
+    reload_cards(type);
+  };
 
   let handleChangeType = (e) => {
     setType(e.target.value);
@@ -115,7 +121,7 @@ export default function HomePage(props) {
           setInfo("PROBLEM");
         });
     }
-  }
+  };
 
   return (
     <MiniDrawer
